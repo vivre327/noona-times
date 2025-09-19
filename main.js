@@ -9,8 +9,7 @@
 - 실제 데이터 활용을 위해서는 fetch의 응답(response)을 적절히 처리해야 함.
 */
 
-const API_KEY = CONFIG.NEWS_API_KEY;
-
+// const PAGE_SIZE = 10;
 
 // 반복 사용되는 API 키를 상수로 지정
 let newsList = []; // 전역변수 선언 (다른 함수에서도 사용할 변수)
@@ -25,7 +24,7 @@ const getLatestNews = async () => {
   // new: 새로 만든다
   // URL: url을 만든다
   // 개발자는 URL호출할 일이 많다..javascript는 api호출을 위한 만들어진 인스턴스가 있다.(다양한 함수와 변수르 제공함)
-  const url = new URL(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`);
+  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr`);
   // 궁극적 목표 : 인터넷 세계에서 url을 호출하여 데이터를 긁어오는 것.
   // fetch : 데이터를 긁어오는 함수
   const response = await fetch(url); // fetch가 끝나면 reponse를 받아올 수 가 있다.
@@ -43,7 +42,7 @@ const getLatestNews = async () => {
 const getNewsByCategory = async (event) => {
   const category = event.target.textContent.toLowerCase();
   console.log(category);
-  const url = new URL(`https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`);
+  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr&category=${category}`);
 
   const response = await fetch(url)
   const data = await response.json() //카테고리에 맞는 api요청해서 받아온 값
@@ -60,7 +59,7 @@ const getNewsKeyword = async () => {
   if(!keyword){
     return
   }
-  const url = new URL(`https://newsapi.org/v2/top-headlines?country=us&q=${keyword}&apiKey=${API_KEY}`);
+  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr&q=${keyword}`);
   
   const response = await fetch(url)
   const data = await response.json()
