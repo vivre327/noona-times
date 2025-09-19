@@ -21,7 +21,11 @@ const menus = document.querySelectorAll(".menus button");
 console.log("mmm",menus)
 menus.forEach(menu=>menu.addEventListener("click",(event)=>{getNewsByCategory(event)}));
 let url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr`);
-
+// 페이지네이션을 위한 변수
+let totalResults = 0
+let page = 1
+const pageSize = 10 //한페이지에 데이터 10개
+const groupSize = 5 //변하지 않는 값들은 const....
 
 // Code Refactor: 반복 줄이기
 
@@ -33,6 +37,7 @@ const getNews = async () => {
     // **await(비동기) 은 fetch가 pending상태가 아니라 response를 받을때까지 기다려준다
     
     const data = await response.json();
+
     if(response.status === 200){
       // 200 ok이나 검색결과가 0일때
       if(data.articles.length === 0){
@@ -40,8 +45,12 @@ const getNews = async () => {
       }
       // 우리가 받은 response를 json형태로 뽑아내야 한다.
       // ** json으로 뽑아내는 것도 서버와의 통신이므로 await기다려야 한다
+      console.log("ddd", data);
       newsList = data.articles;
+      totalResults = data.totalResults;//페이지네이션을 위해 data의 전체갯수를 저장
+
       render();
+      paginationRender();
     } else {
       throw new Error(data.message)
     }
@@ -62,7 +71,6 @@ const getLatestNews = async () => {
   // 개발자는 URL호출할 일이 많다..javascript는 api호출을 위한 만들어진 인스턴스가 있다.(다양한 함수와 변수르 제공함)
   url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr`);
   getNews();
-  console.log("ddd", newsList);
 }
 
 // 카테고리
@@ -143,8 +151,47 @@ const errorRender = (errorMessage) => {
   document.getElementById("news-board").innerHTML = errorHTML;
 }
 
-getLatestNews();
+// 페이지네이션 렌더
+const paginationRender = () => {
+  // ***페이지네이션에 필요한 변수 정의 및 계산 ***
+  // totalResults? api를 호출할때마다 data에 totalResults라는 key가 들어있었다.
+  // 전역변수 : totalResults / pageSize / page / groupSize
+  // 지역변수 : pageGroup / lastPage / firstPage
 
+  // 현재 페이지 그룹(pageGroup) 공식 : page / groupSize → 올림
+  const pageGroup = Math.ceil(page/groupSize);
+  // 마지막 페이지 공식 : pageGroup × groupSize
+  const lastPage = pageGroup * groupSize;
+  // 첫번째 페이지 공식 : lastPage - (groupSize - 1)
+  const firstPage = lastPage - (groupSize - 1);
+
+  
+  // *** 화면에 그려주는 로직 first ~ last 까지..!!!!***
+  let paginationHTML = ``;
+
+  // 페이지네이션은 배열이 아님. 1~5까지 숫자만 알수있는것. 배열함수 사용X => for문을 사용한다.
+  // for(첫번째페이지부터;마지막페이지까지;++계속더해준다)
+  for(let i =firstPage; i <= lastPage; i++){
+    // 1부터 5까지 돌면서 li리스트를 계속 더해준다
+    paginationHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+  }
+  document.querySelector('.pagination').innerHTML = paginationHTML;
+
+
+
+  // <nav aria-label="Page navigation example">
+  //   <ul class="pagination">
+  //     <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+  //     <li class="page-item"><a class="page-link" href="#">1</a></li>
+  //     <li class="page-item"><a class="page-link" href="#">2</a></li>
+  //     <li class="page-item"><a class="page-link" href="#">3</a></li>
+  //     <li class="page-item"><a class="page-link" href="#">Next</a></li>
+  //   </ul>
+  // </nav>
+
+}
+
+getLatestNews();
 
 // 검색인풋
 const searchToggleBtn = document.getElementById("search-toggle");
