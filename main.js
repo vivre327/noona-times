@@ -9,7 +9,10 @@
 - 실제 데이터 활용을 위해서는 fetch의 응답(response)을 적절히 처리해야 함.
 */
 
-// const PAGE_SIZE = 10;
+// *** 에러 핸들링 헷갈릴때 확인하기!!==> https://hackmd.io/@YS3WJBkRQzKk2sbRRhHyyg/S15WXh5oeg
+
+// const API_KEY = CONFIG.NEWS_API_KEY;
+
 
 // 반복 사용되는 API 키를 상수로 지정
 let newsList = []; // 전역변수 선언 (다른 함수에서도 사용할 변수)
@@ -23,15 +26,31 @@ let url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlin
 // Code Refactor: 반복 줄이기
 
 const getNews = async () => {
-  // **궁극적 목표 : 인터넷 세계에서 url을 호출하여 데이터를 긁어오는 것.
-  // fetch : 데이터를 긁어오는 함수
-  const response = await fetch(url); // fetch가 끝나면 reponse를 받아올 수 가 있다.
-  // **await(비동기) 은 fetch가 pending상태가 아니라 response를 받을때까지 기다려준다
-  const data = await response.json();
-  // 우리가 받은 response를 json형태로 뽑아내야 한다.
-  // ** json으로 뽑아내는 것도 서버와의 통신이므로 await기다려야 한다
-  newsList = data.articles;
-  render();
+  try{
+    // **궁극적 목표 : 인터넷 세계에서 url을 호출하여 데이터를 긁어오는 것.
+    // fetch : 데이터를 긁어오는 함수
+    const response = await fetch(url); // fetch가 끝나면 reponse를 받아올 수 가 있다.
+    // **await(비동기) 은 fetch가 pending상태가 아니라 response를 받을때까지 기다려준다
+    
+    const data = await response.json();
+    if(response.status === 200){
+      // 200 ok이나 검색결과가 0일때
+      if(data.articles.length === 0){
+        throw new Error("No result for this search")
+      }
+      // 우리가 받은 response를 json형태로 뽑아내야 한다.
+      // ** json으로 뽑아내는 것도 서버와의 통신이므로 await기다려야 한다
+      newsList = data.articles;
+      render();
+    } else {
+      throw new Error(data.message)
+    }
+
+
+  } catch (error){
+    // console.log("error", error.message);
+    errorRender(error.message)
+  }
 }
 
 
@@ -113,6 +132,15 @@ const render = () => {
 
   document.getElementById('news-board').innerHTML = newsHTML;
   // console.log(newsHTML);
+}
+
+const errorRender = (errorMessage) => {
+  const errorHTML = `
+  <div class="alert alert-danger" role="alert">
+    ${errorMessage}
+  </div>
+  `
+  document.getElementById("news-board").innerHTML = errorHTML;
 }
 
 getLatestNews();
