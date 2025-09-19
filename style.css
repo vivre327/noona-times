@@ -1,0 +1,215 @@
+/*----------------------
+  Header
+----------------------*/
+.head-line {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+.head-line svg {
+  width: 430px;
+}
+
+/*----------------------
+  Gnb
+----------------------*/
+.menus {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1em;
+  border-top: 1px solid #ebebeb;
+  border-bottom: 4px double #000;
+}
+
+.menus button {
+  margin: 5px;
+  border: none;
+  background: none;
+  transition: 0.2s ease;
+}
+
+.menus button:hover {
+  background-color: beige;
+}
+
+.img-container {
+  max-width: 100%;
+}
+
+.news-img-size {
+  width: 100%;
+  height: 100%;
+  max-height: 250px;
+  object-fit: cover;
+}
+
+/*----------------------
+  Search
+----------------------*/
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-block: 8px;
+}
+
+.search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  transition: 0.2s ease;
+}
+.search-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.search-input {
+  display: none;              
+  margin-left: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.search-input.active {
+  display: inline-block;  
+}
+
+.search-btn.active {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/*----------------------
+  News
+----------------------*/
+.news {
+  padding-block: 10px;
+  border-bottom: 2px solid #000;
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.meta {
+  margin-top: auto;
+  color: gray;
+}
+
+/*----------------------
+  Mobile Menu
+----------------------*/
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.close-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .head-line {
+    margin: 0;
+    padding-block: 12px;
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+  }
+
+  .news {
+    padding-block: 18px;
+  }
+
+  .news-container {
+    padding-inline: 20px;
+  }
+
+  .content-area {
+    margin-top: 18px;
+  }
+
+  .content-area h2 {
+    font-size: 22px;
+  }
+
+  .hamburger-btn {
+    display: block;
+  }
+
+  .search-btn {
+    padding: 4px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .search-btn img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .menus {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    background: #fff;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    transition: right 0.3s ease;
+    padding: 36px 20px 20px;
+    overflow-y: auto;
+    border: 0;
+    z-index: 1000;
+  }
+
+  .menus.active {
+    right: 0;
+  }
+
+  .menus button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin: 10px 0;
+  }
+
+  .menus .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    right: 14px;
+  }
+}
+
