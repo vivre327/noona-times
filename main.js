@@ -17,6 +17,23 @@ let newsList = []; // 전역변수 선언 (다른 함수에서도 사용할 변�
 const menus = document.querySelectorAll(".menus button");
 console.log("mmm",menus)
 menus.forEach(menu=>menu.addEventListener("click",(event)=>{getNewsByCategory(event)}));
+let url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr`);
+
+
+// Code Refactor: 반복 줄이기
+
+const getNews = async () => {
+  // **궁극적 목표 : 인터넷 세계에서 url을 호출하여 데이터를 긁어오는 것.
+  // fetch : 데이터를 긁어오는 함수
+  const response = await fetch(url); // fetch가 끝나면 reponse를 받아올 수 가 있다.
+  // **await(비동기) 은 fetch가 pending상태가 아니라 response를 받을때까지 기다려준다
+  const data = await response.json();
+  // 우리가 받은 response를 json형태로 뽑아내야 한다.
+  // ** json으로 뽑아내는 것도 서버와의 통신이므로 await기다려야 한다
+  newsList = data.articles;
+  render();
+}
+
 
 // async : 비동기함수
 const getLatestNews = async () => {
@@ -24,31 +41,22 @@ const getLatestNews = async () => {
   // new: 새로 만든다
   // URL: url을 만든다
   // 개발자는 URL호출할 일이 많다..javascript는 api호출을 위한 만들어진 인스턴스가 있다.(다양한 함수와 변수르 제공함)
-  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr`);
-  // 궁극적 목표 : 인터넷 세계에서 url을 호출하여 데이터를 긁어오는 것.
-  // fetch : 데이터를 긁어오는 함수
-  const response = await fetch(url); // fetch가 끝나면 reponse를 받아올 수 가 있다.
-  // **await(비동기) 은 fetch가 pending상태가 아니라 response를 받을때까지 기다려준다
-  const data = await response.json();
-  // 우리가 받은 response를 json형태로 뽑아내야 한다.
-  // ** json으로 뽑아내는 것도 서버와의 통신이므로 await기다려야 한다
-
-  newsList = data.articles;
-  render();
+  url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr`);
+  getNews();
   console.log("ddd", newsList);
 }
 
 // 카테고리
 const getNewsByCategory = async (event) => {
   const category = event.target.textContent.toLowerCase();
-  console.log(category);
-  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr&category=${category}`);
+  url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr&category=${category}`);
 
-  const response = await fetch(url)
-  const data = await response.json() //카테고리에 맞는 api요청해서 받아온 값
-  console.log("ddd",data)
-  newsList = data.articles; // 랜더 다시 해주기 전에 newsList를 여기서 받아온값으로 재정의
-  render() //그리고 랜더 다시 해주기
+  // 카테고리에 맞는 api요청해서 받아오기
+  // 랜더 다시 해주기 전에 newsList를 여기서 받아온값으로 재정의
+  //그리고 랜더 다시 해주기
+  // console.log("ddd",data)
+  
+  getNews();
   sideMenu.classList.remove("active");
 }
 
@@ -59,14 +67,11 @@ const getNewsKeyword = async () => {
   if(!keyword){
     return
   }
-  const url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr&q=${keyword}`);
+  url = new URL(`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr&q=${keyword}`);
   
-  const response = await fetch(url)
-  const data = await response.json()
-  console.log("keyword", data);
-
-  newsList = data.articles; //뉴스리스트에 보여주고 싶은 값을 담아야한다
-  render()
+  //뉴스리스트에 보여주고 싶은 값을 담아야한다
+  // console.log("keyword", data);
+  getNews();
   
 }
 
