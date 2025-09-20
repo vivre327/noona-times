@@ -162,7 +162,7 @@ const paginationRender = () => {
   // 지역변수 : pageGroup / lastPage / firstPage / totalPages
 
   // totalPages
-  const totalPages = Math.ceil(totalResults / pageSize);
+  const totalPages = Math.ceil(totalResults / pageSize); // 뉴스갯수 / 5 -> 페이지네이션 총 몇개?
   // 현재 페이지 그룹(pageGroup) 공식 : page / groupSize → 올림
   const pageGroup = Math.ceil(page/groupSize);
   // 마지막 페이지 공식 : pageGroup × groupSize
@@ -176,16 +176,39 @@ const paginationRender = () => {
   const firstPage = lastPage - (groupSize - 1) <= 0? 1: lastPage - (groupSize - 1);
   
   // *** 화면에 그려주는 로직 first ~ last 까지..!!!!***
-  let paginationHTML = `<li class="page-item ${page == 1 ? "disabled" : ""}" ${page === 1 ? "" : `onclick="moveToPage(${page - 1})"`}><a class="page-link">Previous</a></li>`;
+  let paginationHTML = ``;
+  // <와<<버튼은 첫번째페이지가 아닐때에만 그려줌
+  if (page > 1) {
+    // firstPage는 속한 그룹의 첫페이지(ex.6..11..)이므로 매개변수로 1을 넘겨줘야한다.. 무조건 1페이지로 간다
+      paginationHTML = `<li class="pagination-item" onclick="moveToPage(1)">
+                          <a class="pagination-button button-first"></a>
+                        </li>
+                        <li class="pagination-item" onclick="moveToPage(${page - 1})">
+                          <a class="pagination-button button-prev"></a>
+                        </li>`;
+    }
+
 
   // 페이지네이션은 배열이 아님. 1~5까지 숫자만 알수있는것. 배열함수 사용X => for문을 사용한다.
   // for(첫번째페이지부터;마지막페이지까지;++계속더해준다)
-  for(let i =firstPage; i <= lastPage; i++){
+  for(let i = firstPage; i <= lastPage; i++){
     // 1부터 5까지 돌면서 li리스트를 계속 더해준다
     // moveToPage함수를 만들어서 클릭한 li의 i을 넘겨준다
-    paginationHTML += `<li class="page-item ${i== page ? "active" : ""}" onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
+    paginationHTML += `<li class="pagination-item" onclick="moveToPage(${i})"><a class="pagination-button ${i== page ? "active" : ""}">${i}</a></li>`
   }
-  paginationHTML += `<li class="page-item ${page === totalPages ? "disabled" : ""}" ${page === totalPages ? "" : `onclick="moveToPage(${page + 1})"`}><a class="page-link">Next</a></li>`;
+  // 현재 페이지(page)가 페이지네이션 총 갯수보다 작을 때만 >, >>를 그려줌
+  if (page < totalPages) {
+    paginationHTML += `<li class="pagination-item" onclick="moveToPage(${page + 1})">
+                        <a class="pagination-button button-next"></a>
+                       </li>
+                       <li class="pagination-item" onclick="moveToPage(${totalPages})">
+                        <a class="pagination-button button-last"></a>
+                       </li>`;
+  }
+
+
+
+  
   document.querySelector('.pagination').innerHTML = paginationHTML;
 
 

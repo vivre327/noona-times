@@ -1,3 +1,17 @@
+/* global.css */
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* 기본 폰트 적용 */
+body {
+  font-family: 'Pretendard', sans-serif;
+}
+
+
 /*----------------------
   Header
 ----------------------*/
@@ -112,6 +126,135 @@
 }
 
 /*----------------------
+  Pagination
+----------------------*/
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-block: 20px;
+}
+
+.pagination-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination-item {
+  margin: 0 2px;
+}
+
+.pagination-button {
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  border: 0;
+  background-color: #ffffff; /* white */
+  color: #141426;            /* text color */
+  text-decoration: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 24px;
+  font-size: 14px;           /* caption-02 */
+  font-weight: 500;
+}
+
+/* hover, focus */
+.pagination-button:hover,
+.pagination-button:focus {
+  color: #246BEB;
+  font-weight: 700;
+}
+
+/* current page */
+.pagination-button.active {
+  background-color: #246BEB;
+  color: #ffffff;
+}
+
+/* 이동 버튼 (first, prev, next, last) */
+.pagination-button.button-first,
+.pagination-button.button-prev,
+.pagination-button.button-next,
+.pagination-button.button-last {
+  border: 1px solid #246BEB;
+  background-color: transparent;
+  transition: 0.2s ease;
+}
+
+.pagination-button.button-first:hover,
+.pagination-button.button-first:focus,
+.pagination-button.button-prev:hover,
+.pagination-button.button-prev:focus,
+.pagination-button.button-next:hover,
+.pagination-button.button-next:focus,
+.pagination-button.button-last:hover,
+.pagination-button.button-last:focus {
+  background-color: #246BEB;
+  border-color: #246BEB;
+  color: #fff;
+}
+
+/* prev, next 버튼 크기 조정 */
+.pagination-button.button-prev,
+.pagination-button.button-next {
+  background-size: 16px;
+}
+
+/* 줄임표 버튼 */
+.pagination-button.button-ellipsis {
+  border-radius: 4px;
+}
+
+.pagination-button.button-ellipsis span {
+  color: #333333;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ----------------------
+   Background Icons
+---------------------- */
+.button-first {
+  background-image: url('./images/first.svg');
+}
+.button-prev {
+  background-image: url('./images/prev.svg');
+}
+.button-next {
+  background-image: url('./images/next.svg');
+}
+.button-last {
+  background-image: url('./images/last.svg');
+}
+
+.button-first:hover,
+.button-first:focus {
+  background-image: url('./images/first_active.svg');
+}
+
+.button-prev:hover,
+.button-prev:focus {
+  background-image: url('./images/prev_active.svg');
+}
+
+.button-next:hover,
+.button-next:focus {
+  background-image: url('./images/next_active.svg');
+}
+
+.button-last:hover,
+.button-last:focus {
+  background-image: url('./images/last_active.svg');
+}
+
+/*----------------------
   Mobile Menu
 ----------------------*/
 .actions {
@@ -211,8 +354,4 @@
     top: 0;
     right: 14px;
   }
-}
-
-.page-link {
-  cursor: pointer;
 }
