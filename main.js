@@ -32,10 +32,13 @@ const groupSize = 5 //변하지 않는 값들은 const....
 const getNews = async () => {
   try{
     // **궁극적 목표 : 인터넷 세계에서 url을 호출하여 데이터를 긁어오는 것.
+    url.searchParams.set("page", page); //=> &page=page
+    // searchParams:파라미터를 set:설정할게 "page"라는 파라미터를 page(내가만든변수1..2..)값으로! 
+    url.searchParams.set("pageSize", pageSize);
+    
     // fetch : 데이터를 긁어오는 함수
     const response = await fetch(url); // fetch가 끝나면 reponse를 받아올 수 가 있다.
     // **await(비동기) 은 fetch가 pending상태가 아니라 response를 받을때까지 기다려준다
-    
     const data = await response.json();
 
     if(response.status === 200){
@@ -82,7 +85,7 @@ const getNewsByCategory = async (event) => {
   // 랜더 다시 해주기 전에 newsList를 여기서 받아온값으로 재정의
   //그리고 랜더 다시 해주기
   // console.log("ddd",data)
-  
+  page = 1; 
   getNews();
   sideMenu.classList.remove("active");
 }
@@ -155,26 +158,34 @@ const errorRender = (errorMessage) => {
 const paginationRender = () => {
   // ***페이지네이션에 필요한 변수 정의 및 계산 ***
   // totalResults? api를 호출할때마다 data에 totalResults라는 key가 들어있었다.
-  // 전역변수 : totalResults / pageSize / page / groupSize
-  // 지역변수 : pageGroup / lastPage / firstPage
+  // 전역변수 : totalResults / pageSize(한페이지에뉴스10개) / page / groupSize(페이지네이션5개)
+  // 지역변수 : pageGroup / lastPage / firstPage / totalPages
 
+  // totalPages
+  const totalPages = Math.ceil(totalResults / pageSize);
   // 현재 페이지 그룹(pageGroup) 공식 : page / groupSize → 올림
   const pageGroup = Math.ceil(page/groupSize);
   // 마지막 페이지 공식 : pageGroup × groupSize
-  const lastPage = pageGroup * groupSize;
+  let lastPage = pageGroup * groupSize;
+  // 엣지케이스: 마지막 페이지가 그룹사이즈보다 작으면? lastPage = totalPage
+  if(lastPage > totalPages) {
+    lastPage = totalPages
+  }
   // 첫번째 페이지 공식 : lastPage - (groupSize - 1)
-  const firstPage = lastPage - (groupSize - 1);
-
+  // 만약 lastPage - (groupSize - 1)값이 0보다 작거나같으면 무조건1로대입, 그게 아니면 lastPage - (groupSize - 1)
+  const firstPage = lastPage - (groupSize - 1) <= 0? 1: lastPage - (groupSize - 1);
   
   // *** 화면에 그려주는 로직 first ~ last 까지..!!!!***
-  let paginationHTML = ``;
+  let paginationHTML = `<li class="page-item ${page == 1 ? "disabled" : ""}" ${page === 1 ? "" : `onclick="moveToPage(${page - 1})"`}><a class="page-link">Previous</a></li>`;
 
   // 페이지네이션은 배열이 아님. 1~5까지 숫자만 알수있는것. 배열함수 사용X => for문을 사용한다.
   // for(첫번째페이지부터;마지막페이지까지;++계속더해준다)
   for(let i =firstPage; i <= lastPage; i++){
     // 1부터 5까지 돌면서 li리스트를 계속 더해준다
-    paginationHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+    // moveToPage함수를 만들어서 클릭한 li의 i을 넘겨준다
+    paginationHTML += `<li class="page-item ${i== page ? "active" : ""}" onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
   }
+  paginationHTML += `<li class="page-item ${page === totalPages ? "disabled" : ""}" ${page === totalPages ? "" : `onclick="moveToPage(${page + 1})"`}><a class="page-link">Next</a></li>`;
   document.querySelector('.pagination').innerHTML = paginationHTML;
 
 
@@ -188,7 +199,13 @@ const paginationRender = () => {
   //     <li class="page-item"><a class="page-link" href="#">Next</a></li>
   //   </ul>
   // </nav>
+}
 
+// 페이지네이션 클릭 함수
+const moveToPage = (pageNum) => {
+  console.log(pageNum);
+  page = pageNum; // page가 pageNum으로 유동적으로 바뀌게
+  getNews();
 }
 
 getLatestNews();

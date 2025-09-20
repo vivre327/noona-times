@@ -213,3 +213,6 @@
   }
 }
 
+.page-link {
+  cursor: pointer;
+}
